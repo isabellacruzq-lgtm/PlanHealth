@@ -7,6 +7,8 @@ import { CultivosModule } from './cultivos/cultivos.module.js';
 import { Planta } from './plantas/planta.entity.js';
 import { Susceptibilidad } from './susceptibilidades/susceptibilidad.entity.js';
 import { Cultivo } from './cultivos/cultivo.entity.js';
+import { BrotesModule } from './brotes/brotes.module.js';
+import { Brote } from './brotes/entities/brote.entity.js';
 
 @Module({
   imports: [
@@ -21,13 +23,14 @@ import { Cultivo } from './cultivos/cultivo.entity.js';
         username: config.get<string>('DB_USERNAME', 'root'),
         password: config.get<string>('DB_PASSWORD', ''),
         database: config.get<string>('DB_DATABASE', 'breaze_in_the_moon'),
-        entities: [Planta, Susceptibilidad, Cultivo],
+        entities: [Planta, Susceptibilidad, Cultivo, Brote],
         synchronize: config.get<string>('DB_SYNCHRONIZE', 'false') === 'true',
       }),
     }),
     PlantasModule,
     SusceptibilidadesModule,
     CultivosModule,
+    BrotesModule,
   ],
 })
 export class AppModule {}
