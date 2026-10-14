@@ -9,6 +9,9 @@ import { Susceptibilidad } from './susceptibilidades/susceptibilidad.entity.js';
 import { Cultivo } from './cultivos/cultivo.entity.js';
 import { BrotesModule } from './brotes/brotes.module.js';
 import { Brote } from './brotes/entities/brote.entity.js';
+import { EnfermedadesModule } from './enfermedades/enfermedades.module.js';
+
+
 
 @Module({
   imports: [
@@ -31,6 +34,7 @@ import { Brote } from './brotes/entities/brote.entity.js';
     SusceptibilidadesModule,
     CultivosModule,
     BrotesModule,
+    EnfermedadesModule,
   ],
 })
 export class AppModule {}
