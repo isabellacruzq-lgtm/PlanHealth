@@ -1,188 +1,20 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
-import { Patogeno } from '../patogenos/patogeno.entity.js';
-import { Tratamiento } from '../tratamientos/tratamiento.entity.js';
-
-import { Enfermedad } from '../enfermedades/enfermedad.entity.js';
-import { CreateEnfermedadDto } from '../enfermedades/dto/create-enfermedad.dto.js';
-import { UpdateEnfermedadDto } from '../enfermedades/dto/update-enfermedad.dto.js';
-import { FiltrarEnfermedadesDto } from '../enfermedades/dto/filtrar-enfermedades.dto.js';
-
+import { Enfermedad, EpocaRiesgo } from './enfermedad.entity.js';
+import { CreateEnfermedadDto } from './dto/create-enfermedad.dto.js';
+import { UpdateEnfermedadDto } from './dto/update-enfermedad.dto.js';
 @Injectable()
 export class EnfermedadesService {
-  constructor(
-    @InjectRepository(Enfermedad)
-    private readonly enfermedadesRepository: Repository<Enfermedad>,
-
-    @InjectRepository(Patogeno)
-    private readonly patogenosRepository: Repository<Patogeno>,
-
-    @InjectRepository(Tratamiento)
-    private readonly tratamientosRepository: Repository<Tratamiento>,
-  ) {}
-
-  private async validarPatogeno(id: number): Promise<void> {
-    const existe = await this.patogenosRepository.existsBy({
-      id,
-    });
-
-    if (!existe) {
-      throw new BadRequestException(
-        `El patógeno con ID ${id} no existe`,
-      );
-    }
-  }
-
-  async create(dto: CreateEnfermedadDto) {
-    await this.validarPatogeno(dto.patogenoId);
-
-    const enfermedad = this.enfermedadesRepository.create({
-      nombre: dto.nombre.trim(),
-      descripcionSintomas: dto.descripcionSintomas.trim(),
-      epocaRiesgo: dto.epocaRiesgo,
-      patogenoId: dto.patogenoId,
-    });
-
-    return this.enfermedadesRepository.save(enfermedad);
-  }
-
-  findAll(filtros: FiltrarEnfermedadesDto) {
-    const consulta =
-      this.enfermedadesRepository.createQueryBuilder('enfermedad');
-
-    if (filtros.nombre !== undefined) {
-      consulta.andWhere(
-        'LOCATE(LOWER(:nombre), LOWER(enfermedad.nombre)) > 0',
-        {
-          nombre: filtros.nombre.trim(),
-        },
-      );
-    }
-
-    if (filtros.epocaRiesgo !== undefined) {
-      consulta.andWhere(
-        'enfermedad.epocaRiesgo = :epocaRiesgo',
-        {
-          epocaRiesgo: filtros.epocaRiesgo,
-        },
-      );
-    }
-
-    if (filtros.patogenoId !== undefined) {
-      consulta.andWhere(
-        'enfermedad.patogenoId = :patogenoId',
-        {
-          patogenoId: filtros.patogenoId,
-        },
-      );
-    }
-
-    return consulta
-      .orderBy('enfermedad.id', 'ASC')
-      .getMany();
-  }
-
-  async findOne(id: number) {
-    const enfermedad =
-      await this.enfermedadesRepository.findOneBy({
-        id,
-      });
-
-    if (!enfermedad) {
-      throw new NotFoundException(
-        `La enfermedad con ID ${id} no existe`,
-      );
-    }
-
-    return enfermedad;
-  }
-
-  async findOneConPatogeno(id: number) {
-    // Primera consulta: buscar la enfermedad.
-    const enfermedad = await this.findOne(id);
-
-    // Segunda consulta: buscar el patógeno por su ID.
-    const patogeno = await this.patogenosRepository.findOneBy({
-      id: enfermedad.patogenoId,
-    });
-
-    if (!patogeno) {
-      throw new ConflictException(
-        `La enfermedad referencia al patógeno ${enfermedad.patogenoId}, pero este ya no existe`,
-      );
-    }
-
-    // Se construye una respuesta; no se agrega una relación a la entidad.
-    return {
-      enfermedad: {
-        id: enfermedad.id,
-        nombre: enfermedad.nombre,
-        descripcionSintomas: enfermedad.descripcionSintomas,
-        epocaRiesgo: enfermedad.epocaRiesgo,
-        patogenoId: enfermedad.patogenoId,
-      },
-      patogeno: {
-        ...patogeno,
-      },
-    };
-  }
-
-  async update(id: number, dto: UpdateEnfermedadDto) {
-    if (Object.keys(dto).length === 0) {
-      throw new BadRequestException(
-        'Debes enviar al menos un campo para actualizar',
-      );
-    }
-
-    const enfermedad = await this.findOne(id);
-
-    if (dto.patogenoId !== undefined) {
-      await this.validarPatogeno(dto.patogenoId);
-      enfermedad.patogenoId = dto.patogenoId;
-    }
-
-    if (dto.nombre !== undefined) {
-      enfermedad.nombre = dto.nombre.trim();
-    }
-
-    if (dto.descripcionSintomas !== undefined) {
-      enfermedad.descripcionSintomas =
-        dto.descripcionSintomas.trim();
-    }
-
-    if (dto.epocaRiesgo !== undefined) {
-      enfermedad.epocaRiesgo = dto.epocaRiesgo;
-    }
-
-    return this.enfermedadesRepository.save(enfermedad);
-  }
-
-  async remove(id: number) {
-    const enfermedad = await this.findOne(id);
-
-    const tieneTratamientos =
-      await this.tratamientosRepository.existsBy({
-        enfermedadId: id,
-      });
-
-    if (tieneTratamientos) {
-      throw new ConflictException(
-        'No puedes eliminar una enfermedad con tratamientos asociados',
-      );
-    }
-
-    await this.enfermedadesRepository.remove(enfermedad);
-
-    return {
-      mensaje: 'Enfermedad eliminada correctamente',
-    };
-  }
+  constructor(@InjectRepository(Enfermedad) private readonly repo: Repository<Enfermedad>) {}
+  private texto(v: unknown, campo: string, max = 120): string { if (typeof v !== 'string' || !v.trim()) throw new BadRequestException(`${campo} es obligatorio`); const s=v.trim(); if(s.length>max) throw new BadRequestException(`${campo} no puede superar ${max} caracteres`); return s; }
+  private id(v: unknown): number { const n=Number(v); if(!Number.isInteger(n)||n<=0) throw new BadRequestException('patogenoId debe ser un entero positivo'); return n; }
+  private epoca(v: unknown): EpocaRiesgo { if(!Object.values(EpocaRiesgo).includes(v as EpocaRiesgo)) throw new BadRequestException(`epocaRiesgo debe ser uno de: ${Object.values(EpocaRiesgo).join(', ')}`); return v as EpocaRiesgo; }
+  private async validarPatogeno(id: number) { const rows=await this.repo.manager.query('SELECT id FROM patogenos WHERE id = ?', [id]); if(!rows.length) throw new NotFoundException(`No existe un patógeno con ID ${id}`); }
+  async crear(dto: CreateEnfermedadDto) { const patogenoId=this.id(dto.patogenoId); await this.validarPatogeno(patogenoId); return this.repo.save(this.repo.create({ nombre:this.texto(dto.nombre,'nombre'), descripcionSintomas:this.texto(dto.descripcionSintomas,'descripcionSintomas',5000), epocaRiesgo:this.epoca(dto.epocaRiesgo), patogenoId })); }
+  async listar(f: { nombre?:string; epocaRiesgo?:string; patogenoId?:string }) { const qb=this.repo.createQueryBuilder('e'); if(f.nombre) qb.andWhere('e.nombre LIKE :nombre',{nombre:`%${f.nombre}%`}); if(f.epocaRiesgo) qb.andWhere('e.epocaRiesgo = :epoca',{epoca:this.epoca(f.epocaRiesgo)}); if(f.patogenoId!==undefined) qb.andWhere('e.patogenoId = :pid',{pid:this.id(f.patogenoId)}); return qb.orderBy('e.id','ASC').getMany(); }
+  async buscarPorId(id:number) { const r=await this.repo.findOneBy({id}); if(!r) throw new NotFoundException(`No existe una enfermedad con ID ${id}`); return r; }
+  async detalle(id:number) { const enfermedad=await this.buscarPorId(id); const patogenos=await this.repo.manager.query('SELECT id, nombre, nombreCientifico, tipo, transmision FROM patogenos WHERE id = ?', [enfermedad.patogenoId]); const tratamientos=await this.repo.manager.query('SELECT id, nombre, descripcionAplicacion, tipo, enfermedadId FROM tratamientos WHERE enfermedadId = ?', [id]); return { ...enfermedad, patogeno:patogenos[0] ?? null, tratamientos }; }
+  async actualizar(id:number,dto:UpdateEnfermedadDto) { const r=await this.buscarPorId(id); if(dto.nombre!==undefined) r.nombre=this.texto(dto.nombre,'nombre'); if(dto.descripcionSintomas!==undefined) r.descripcionSintomas=this.texto(dto.descripcionSintomas,'descripcionSintomas',5000); if(dto.epocaRiesgo!==undefined) r.epocaRiesgo=this.epoca(dto.epocaRiesgo); if(dto.patogenoId!==undefined) { r.patogenoId=this.id(dto.patogenoId); await this.validarPatogeno(r.patogenoId); } return this.repo.save(r); }
+  async eliminar(id:number) { await this.buscarPorId(id); const [t,s,b]=await Promise.all([this.repo.manager.query('SELECT id FROM tratamientos WHERE enfermedadId = ?', [id]),this.repo.manager.query('SELECT id FROM susceptibilidades WHERE enfermedadId = ?', [id]),this.repo.manager.query('SELECT id FROM brotes WHERE enfermedadId = ?', [id])]); const causas=[]; if(t.length) causas.push('tratamientos'); if(s.length) causas.push('susceptibilidades'); if(b.length) causas.push('brotes'); if(causas.length) throw new ConflictException(`No se puede eliminar la enfermedad porque tiene registros asociados: ${causas.join(', ')}`); await this.repo.delete(id); return {mensaje:`Enfermedad ${id} eliminada correctamente`}; }
 }
