@@ -7,6 +7,7 @@ import { CultivosModule } from './cultivos/cultivos.module.js';
 import { Planta } from './plantas/planta.entity.js';
 import { Susceptibilidad } from './susceptibilidades/susceptibilidad.entity.js';
 import { Cultivo } from './cultivos/cultivo.entity.js';
+import { EnfermedadesModule } from './enfermedades/enfermedades.module.js';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Cultivo } from './cultivos/cultivo.entity.js';
     PlantasModule,
     SusceptibilidadesModule,
     CultivosModule,
+    EnfermedadesModule,
   ],
 })
 export class AppModule {}
