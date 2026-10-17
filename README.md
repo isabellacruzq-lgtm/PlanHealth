@@ -23,8 +23,6 @@ El proyecto se organizó en módulos funcionales para facilitar el desarrollo, l
 | Juliana Velasquez Rivera | Participación en la documentación de los endpoints; responsabilidades adicionales pendientes de confirmar. |
 | Isaac Garcia Arbelaez | Participación en la documentación de los endpoints; responsabilidades adicionales pendientes de confirmar. |
 
-> Esta distribución debe completarse con la asignación exacta acordada por el equipo. No se atribuyen módulos, funcionalidades ni commits individuales sin evidencia.
-
 ## 3. Tecnologías utilizadas
 
 - **Node.js:** entorno de ejecución de JavaScript.
@@ -78,11 +76,9 @@ También se requiere acceso a la base de datos que utilizará la aplicación.
 ### 6.1. Clonar el repositorio
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
-cd PlanHealth
+git clone https://github.com/isabellacruzq-lgtm/PlantHealth
+cd PlantHealth
 ```
-
-Reemplaza `<URL_DEL_REPOSITORIO>` por la URL real del repositorio del equipo.
 
 ### 6.2. Instalar dependencias
 
