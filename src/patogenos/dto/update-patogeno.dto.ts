@@ -1,8 +1,4 @@
-import { TipoPatogeno } from '../patogeno.entity.js';
-export class UpdatePatogenoDto {
-  nombre?: string;
-  nombreCientifico?: string;
-  tipo?: TipoPatogeno;
-  transmision?: string;
-  secuenciaGenetica?: string;
-}
+import { PartialType } from '@nestjs/swagger';
+import { CreatePatogenoDto } from './create-patogeno.dto.js';
+
+export class UpdatePatogenoDto extends PartialType(CreatePatogenoDto) {}

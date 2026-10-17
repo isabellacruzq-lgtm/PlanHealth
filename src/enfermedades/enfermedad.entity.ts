@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum EpocaRiesgo {
   PRIMAVERA = 'primavera', VERANO = 'verano', OTONO = 'otoño',
-  INVIERNO = 'invierno', TODO_EL_ANO = 'todo_el_año',
+  INVIERNO = 'invierno', TODO_EL_ANO = 'todo el año',
 }
 
 @Entity('enfermedades')

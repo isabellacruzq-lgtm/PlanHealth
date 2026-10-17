@@ -1,33 +1,18 @@
-import { Type } from "class-transformer";
-import { IsDate, IsInt, IsNumber, IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBroteDto {
-        @IsInt()
-        plantaId: number;
+  @ApiProperty({ example: 1, description: 'ID de una planta existente' })
+  plantaId!: number;
 
-        @IsInt()
-        enfermedadId: number;
-        
-        @IsDate()
-        @Type(() => Date)
-        fecha: Date;
-        
-        @IsString()
-        region: string;
-        
-        @IsNumber()
-        hectareasAfectadas: number;
+  @ApiProperty({ example: 2, description: 'ID de una enfermedad existente' })
+  enfermedadId!: number;
 
-        @IsInt()
-        fk_brotes_plantaId: number;
+  @ApiProperty({ example: '2026-05-12', description: 'Formato YYYY-MM-DD; no puede ser futura' })
+  fecha!: string;
 
-        @IsInt()
-        fk_brotes_enfermedad: number;
+  @ApiProperty({ example: 'Caldas' })
+  region!: string;
 
-        @IsDate()
-        @Type(() => Date)       
-        fk_brotes_fecha: Date;
-
-        @IsString()
-        fk_brotes_region: string;
+  @ApiProperty({ example: 2.5, description: 'Número mayor que cero' })
+  hectareasAfectadas!: number;
 }
