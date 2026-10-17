@@ -1,44 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  Matches,
-  MaxLength,
-} from 'class-validator';
 import { TipoCultivo } from '../planta.entity.js';
 
 export class CreatePlantaDto {
-  @ApiProperty({ example: 'Tomate' })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(100)
+  @ApiProperty({ example: 'Tomate', description: 'Nombre común de la planta' })
   nombreComun!: string;
 
-  @ApiProperty({ example: 'Solanum lycopersicum' })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(150)
+  @ApiProperty({ example: 'Solanum lycopersicum', description: 'Debe ser único' })
   nombreCientifico!: string;
 
   @ApiProperty({ example: 'Solanaceae' })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(100)
   familiaBotanica!: string;
 
-  @ApiProperty({
-    enum: ['hortaliza', 'frutal', 'cereal', 'ornamental', 'otro'],
-  })
-  @IsEnum(TipoCultivo)
+  @ApiProperty({ enum: TipoCultivo, example: TipoCultivo.HORTALIZA })
   tipoCultivo!: TipoCultivo;
 
-  @ApiProperty({ example: 'ACGTACGT' })
-  @IsString()
-  @IsNotEmpty()
-  @Matches(/^[ACGT]+$/, {
-    message:
-      'secuenciaGenetica debe contener únicamente A, C, G y T en mayúsculas',
-  })
+  @ApiProperty({ example: 'ACGTACGT', description: 'Solo A, C, G y T mayúsculas' })
   secuenciaGenetica!: string;
 }

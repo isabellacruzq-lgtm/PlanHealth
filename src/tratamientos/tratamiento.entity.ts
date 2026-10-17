@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-export enum TipoTratamiento { QUIMICO = 'quimico', BIOLOGICO = 'biologico', CULTURAL = 'cultural' }
+export enum TipoTratamiento { QUIMICO = 'químico', BIOLOGICO = 'biológico', CULTURAL = 'cultural' }
 
 @Entity('tratamientos')
 export class Tratamiento {

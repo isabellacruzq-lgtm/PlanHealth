@@ -100,50 +100,22 @@ export class PlantasService {
     return this.plantasRepo.save(actual);
   }
 
-
   async eliminar(id: number) {
     await this.buscarPorId(id);
-
     // Revisiones manuales por ID; no se declaran relaciones de TypeORM.
-    // Si una consulta falla, el error se propaga y no se elimina la planta.
     const [susceptibilidades, cultivos, brotes] = await Promise.all([
-      this.plantasRepo.manager.query(
-        'SELECT id FROM susceptibilidades WHERE plantaId = ?',
-        [id],
-      ),
-      this.plantasRepo.manager.query(
-        'SELECT id FROM cultivos WHERE plantaId = ?',
-        [id],
-      ),
-      this.plantasRepo.manager.query(
-        'SELECT id FROM brotes WHERE plantaId = ?',
-        [id],
-      ),
+      this.plantasRepo.manager.query('SELECT id FROM susceptibilidades WHERE plantaId = ?', [id]),
+      this.plantasRepo.manager.query('SELECT id FROM cultivos WHERE plantaId = ?', [id]),
+      this.plantasRepo.manager.query('SELECT id FROM brotes WHERE plantaId = ?', [id]),
     ]);
-
     const dependencias: string[] = [];
-
-    if (susceptibilidades.length > 0) {
-      dependencias.push('susceptibilidades');
+    if (susceptibilidades.length) dependencias.push('susceptibilidades');
+    if (cultivos.length) dependencias.push('cultivos');
+    if (brotes.length) dependencias.push('brotes');
+    if (dependencias.length) {
+      throw new ConflictException(`No se puede eliminar la planta porque tiene registros asociados en: ${dependencias.join(', ')}`);
     }
-
-    if (cultivos.length > 0) {
-      dependencias.push('cultivos');
-    }
-
-    if (brotes.length > 0) {
-      dependencias.push('brotes');
-    }
-
-    if (dependencias.length > 0) {
-      throw new ConflictException(
-        `No se puede eliminar la planta porque tiene registros asociados en: ${dependencias.join(', ')}`,
-      );
-    }
-
     await this.plantasRepo.delete(id);
-
     return { mensaje: `Planta ${id} eliminada correctamente` };
   }
-
 }

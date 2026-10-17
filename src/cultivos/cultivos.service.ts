@@ -30,43 +30,18 @@ export class CultivosService {
   }
 
   private fecha(valor: unknown): string {
-  if (typeof valor !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
-    throw new BadRequestException(
-      'fechaSiembra debe tener formato YYYY-MM-DD',
-    );
+    if (typeof valor !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+      throw new BadRequestException('fechaSiembra debe tener formato YYYY-MM-DD');
+    }
+    const date = new Date(`${valor}T00:00:00Z`);
+    if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== valor) {
+      throw new BadRequestException('fechaSiembra no es una fecha válida');
+    }
+    const hoy = new Date();
+    const hoyISO = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+    if (valor > hoyISO) throw new BadRequestException('fechaSiembra no puede ser posterior al día actual');
+    return valor;
   }
-
-  const date = new Date(`${valor}T00:00:00Z`);
-
-  if (
-    Number.isNaN(date.getTime()) ||
-    date.toISOString().slice(0, 10) !== valor
-  ) {
-    throw new BadRequestException('fechaSiembra no es una fecha válida');
-  }
-
-  // Obtener la fecha actual usando la zona horaria de Colombia.
-  const partesFecha = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Bogota',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(new Date());
-
-  const obtenerParte = (tipo: string) =>
-    partesFecha.find((parte) => parte.type === tipo)?.value;
-
-  const hoyISO =
-    `${obtenerParte('year')}-${obtenerParte('month')}-${obtenerParte('day')}`;
-
-  if (valor > hoyISO) {
-    throw new BadRequestException(
-      'fechaSiembra no puede ser posterior al día actual',
-    );
-  }
-
-  return valor;
-}
 
   private async validarPlanta(plantaId: number) {
     const filas = await this.repo.manager.query('SELECT id FROM plantas WHERE id = ?', [plantaId]);
@@ -130,13 +105,9 @@ export class CultivosService {
     return this.repo.save(actual);
   }
 
-
   async eliminar(id: number) {
     await this.buscarPorId(id);
-
     await this.repo.delete(id);
-
     return { mensaje: `Cultivo ${id} eliminado correctamente` };
   }
-
 }

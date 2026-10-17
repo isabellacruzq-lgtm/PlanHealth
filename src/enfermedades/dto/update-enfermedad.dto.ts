@@ -1,7 +1,4 @@
-import { EpocaRiesgo } from '../enfermedad.entity.js';
-export class UpdateEnfermedadDto {
-  nombre?: string;
-  descripcionSintomas?: string;
-  epocaRiesgo?: EpocaRiesgo;
-  patogenoId?: number;
-}
+import { PartialType } from '@nestjs/swagger';
+import { CreateEnfermedadDto } from './create-enfermedad.dto.js';
+
+export class UpdateEnfermedadDto extends PartialType(CreateEnfermedadDto) {}

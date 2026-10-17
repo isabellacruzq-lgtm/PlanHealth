@@ -1,7 +1,4 @@
-import { TipoTratamiento } from '../tratamiento.entity.js';
-export class UpdateTratamientoDto {
-  nombre?: string;
-  descripcionAplicacion?: string;
-  tipo?: TipoTratamiento;
-  enfermedadId?: number;
-}
+import { PartialType } from '@nestjs/swagger';
+import { CreateTratamientoDto } from './create-tratamiento.dto.js';
+
+export class UpdateTratamientoDto extends PartialType(CreateTratamientoDto) {}
