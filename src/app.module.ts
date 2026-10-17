@@ -10,6 +10,10 @@ import { Cultivo } from './cultivos/cultivo.entity.js';
 import { BrotesModule } from './brotes/brotes.module.js';
 import { Brote } from './brotes/entities/brote.entity.js';
 import { EnfermedadesModule } from './enfermedades/enfermedades.module.js';
+import { Enfermedad } from './enfermedades/enfermedad.entity.js';
+import { Patogeno } from './patogenos/patogeno.entity.js';
+import { PatogenosModule } from './patogenos/patogenos.module.js';
+import { EstadisticasModule } from './estadisticas/estadisticas.module.js';
 
 
 
@@ -26,7 +30,7 @@ import { EnfermedadesModule } from './enfermedades/enfermedades.module.js';
         username: config.get<string>('DB_USERNAME', 'root'),
         password: config.get<string>('DB_PASSWORD', ''),
         database: config.get<string>('DB_DATABASE', 'breaze_in_the_moon'),
-        entities: [Planta, Susceptibilidad, Cultivo, Brote],
+        entities: [Planta, Susceptibilidad, Cultivo, Brote, Enfermedad, Patogeno],
         synchronize: config.get<string>('DB_SYNCHRONIZE', 'false') === 'true',
       }),
     }),
@@ -35,6 +39,9 @@ import { EnfermedadesModule } from './enfermedades/enfermedades.module.js';
     CultivosModule,
     BrotesModule,
     EnfermedadesModule,
+    PatogenosModule,
+    EstadisticasModule,
+    
   ],
 })
 export class AppModule {}
