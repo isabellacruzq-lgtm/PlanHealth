@@ -1,0 +1,19 @@
+meta {
+  name: Crear brote
+  type: http
+  seq: 2
+}
+post {
+  url: {{baseUrl}}/brotes
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "plantaId": 1,
+    "enfermedadId": 1,
+    "fecha": "2026-05-20",
+    "region": "Manizales",
+    "hectareasAfectadas": 2.5
+  }
+}

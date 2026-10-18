@@ -1,0 +1,13 @@
+meta {
+  name: Detalle de cultivo
+  type: http
+  seq: 5
+}
+get {
+  url: {{baseUrl}}/cultivos/1/detalle
+  body: none
+  auth: none
+}
+assert {
+  res.status: 200
+}

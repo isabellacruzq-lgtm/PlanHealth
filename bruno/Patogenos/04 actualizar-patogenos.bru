@@ -1,0 +1,15 @@
+meta {
+  name: Actualizar patogenos
+  type: http
+  seq: 4
+}
+patch {
+  url: {{baseUrl}}/patogenos/1
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "transmision": "agua"
+  }
+}

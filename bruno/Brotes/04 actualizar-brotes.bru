@@ -1,0 +1,15 @@
+meta {
+  name: Actualizar brotes
+  type: http
+  seq: 4
+}
+patch {
+  url: {{baseUrl}}/brotes/1
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "hectareasAfectadas": 1.25
+  }
+}

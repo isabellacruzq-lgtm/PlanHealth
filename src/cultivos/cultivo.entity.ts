@@ -5,7 +5,6 @@ export class Cultivo {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  // ID simple: no se declara relación de TypeORM.
   @Column({ type: 'int' })
   plantaId!: number;
 

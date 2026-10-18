@@ -1,0 +1,19 @@
+meta {
+  name: Probar validación inválida de patogenos
+  type: http
+  seq: 6
+}
+post {
+  url: {{baseUrl}}/patogenos
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "nombre": "Patógeno inválido",
+    "nombreCientifico": "Patogeno invalido",
+    "tipo": "bicho",
+    "transmision": "contacto",
+    "secuenciaGenetica": "ACGT"
+  }
+}

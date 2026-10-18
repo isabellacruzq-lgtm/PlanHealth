@@ -5,7 +5,7 @@ export class Brote {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  // IDs simples: las relaciones se consultan manualmente, sin decoradores TypeORM.
+  // IDs simples: las relaciones se consultan manualmente.
   @Column({ type: 'int' })
   plantaId!: number;
 

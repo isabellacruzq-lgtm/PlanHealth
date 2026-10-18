@@ -1,0 +1,13 @@
+meta {
+  name: Consultar enfermedades de patógeno
+  type: http
+  seq: 2
+}
+get {
+  url: {{baseUrl}}/patogenos/1/enfermedades
+  body: none
+  auth: none
+}
+assert {
+  res.status: 200
+}

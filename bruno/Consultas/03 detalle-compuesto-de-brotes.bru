@@ -1,0 +1,13 @@
+meta {
+  name: Detalle compuesto de brotes
+  type: http
+  seq: 3
+}
+get {
+  url: {{baseUrl}}/consultas/brotes/detalle
+  body: none
+  auth: none
+}
+assert {
+  res.status: 200
+}

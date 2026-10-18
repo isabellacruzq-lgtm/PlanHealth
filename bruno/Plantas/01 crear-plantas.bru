@@ -1,0 +1,19 @@
+meta {
+  name: Crear plantas
+  type: http
+  seq: 1
+}
+post {
+  url: {{baseUrl}}/plantas
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "nombreComun": "Pepino",
+    "nombreCientifico": "Cucumis sativus",
+    "familiaBotanica": "Cucurbitaceae",
+    "tipoCultivo": "hortaliza",
+    "secuenciaGenetica": "ACGTACGTACGT"
+  }
+}

@@ -1,0 +1,13 @@
+meta {
+  name: Patógenos más problemáticos
+  type: http
+  seq: 7
+}
+get {
+  url: {{baseUrl}}/estadisticas/patogenos-mas-problematicos
+  body: none
+  auth: none
+}
+assert {
+  res.status: 200
+}

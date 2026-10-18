@@ -1,0 +1,17 @@
+meta {
+  name: Crear susceptibilidades
+  type: http
+  seq: 1
+}
+post {
+  url: {{baseUrl}}/susceptibilidades
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "plantaId": 2,
+    "enfermedadId": 3,
+    "nivel": "media"
+  }
+}
