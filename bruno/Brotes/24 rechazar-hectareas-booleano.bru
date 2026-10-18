@@ -1,0 +1,22 @@
+meta {
+  name: Rechazar hectareas booleano
+  type: http
+  seq: 4
+}
+post {
+  url: {{baseUrl}}/brotes
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "plantaId": 1,
+    "enfermedadId": 1,
+    "fecha": "2026-06-10",
+    "region": "Caldas",
+    "hectareasAfectadas": true
+  }
+}
+assert {
+  res.status: 400
+}

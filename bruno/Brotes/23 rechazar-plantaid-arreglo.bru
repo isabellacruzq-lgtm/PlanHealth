@@ -1,0 +1,24 @@
+meta {
+  name: Rechazar plantaId arreglo
+  type: http
+  seq: 3
+}
+post {
+  url: {{baseUrl}}/brotes
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "plantaId": [
+      1
+    ],
+    "enfermedadId": 1,
+    "fecha": "2026-06-10",
+    "region": "Caldas",
+    "hectareasAfectadas": 1.5
+  }
+}
+assert {
+  res.status: 400
+}

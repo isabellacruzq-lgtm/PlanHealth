@@ -1,0 +1,19 @@
+meta {
+  name: Probar validación inválida de brotes
+  type: http
+  seq: 6
+}
+post {
+  url: {{baseUrl}}/brotes
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "plantaId": true,
+    "enfermedadId": 1,
+    "fecha": "2026-06-10",
+    "region": "Caldas",
+    "hectareasAfectadas": "2.5"
+  }
+}

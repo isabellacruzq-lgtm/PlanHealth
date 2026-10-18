@@ -1,0 +1,13 @@
+meta {
+  name: Detalle de enfermedad con recursos asociados
+  type: http
+  seq: 3
+}
+get {
+  url: {{baseUrl}}/enfermedades/1/detalle
+  body: none
+  auth: none
+}
+assert {
+  res.status: 200
+}

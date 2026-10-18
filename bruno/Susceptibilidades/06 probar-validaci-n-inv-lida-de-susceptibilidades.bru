@@ -1,0 +1,17 @@
+meta {
+  name: Probar validación inválida de susceptibilidades
+  type: http
+  seq: 6
+}
+post {
+  url: {{baseUrl}}/susceptibilidades
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "plantaId": "1",
+    "enfermedadId": 1,
+    "nivel": "media"
+  }
+}

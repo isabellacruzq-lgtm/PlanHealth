@@ -1,0 +1,18 @@
+meta {
+  name: Probar validación inválida de tratamientos
+  type: http
+  seq: 6
+}
+post {
+  url: {{baseUrl}}/tratamientos
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "nombre": "Tratamiento inválido",
+    "descripcionAplicacion": "Prueba",
+    "tipo": "biologico",
+    "enfermedadId": 1
+  }
+}

@@ -1,0 +1,13 @@
+meta {
+  name: Ver mutaciones de cultivo
+  type: http
+  seq: 4
+}
+get {
+  url: {{baseUrl}}/cultivos/1/mutaciones
+  body: none
+  auth: none
+}
+assert {
+  res.status: 200
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Actualizar cultivos
+  type: http
+  seq: 4
+}
+patch {
+  url: {{baseUrl}}/cultivos/1
+  body: json
+  auth: none
+}
+body:json {
+  {
+    "region": "Risaralda"
+  }
+}

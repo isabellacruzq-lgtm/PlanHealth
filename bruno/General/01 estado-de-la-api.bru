@@ -1,0 +1,13 @@
+meta {
+  name: Estado de la API
+  type: http
+  seq: 1
+}
+get {
+  url: {{baseUrl}}/
+  body: none
+  auth: none
+}
+assert {
+  res.status: 200
+}

@@ -1,0 +1,13 @@
+meta {
+  name: Brotes por enfermedad
+  type: http
+  seq: 1
+}
+get {
+  url: {{baseUrl}}/estadisticas/brotes-por-enfermedad
+  body: none
+  auth: none
+}
+assert {
+  res.status: 200
+}

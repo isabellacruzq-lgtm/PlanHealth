@@ -1,0 +1,13 @@
+meta {
+  name: Brotes por planta
+  type: http
+  seq: 3
+}
+get {
+  url: {{baseUrl}}/estadisticas/brotes-por-planta
+  body: none
+  auth: none
+}
+assert {
+  res.status: 200
+}
