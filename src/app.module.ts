@@ -32,7 +32,7 @@ import { AppController } from './app.controller.js';
         port: Number(config.get<string>('DB_PORT', '3306')),
         username: config.get<string>('DB_USERNAME', 'root'),
         password: config.get<string>('DB_PASSWORD', ''),
-        database: config.get<string>('DB_DATABASE', 'breaze_in_the_moon'),
+        database: config.get<string>('DB_DATABASE', 'proyecto_back'),
         entities: [Planta, Susceptibilidad, Cultivo, Patogeno, Enfermedad, Tratamiento, Brote],
         synchronize: config.get<string>('DB_SYNCHRONIZE', 'false') === 'true',
       }),

@@ -237,3 +237,214 @@ Proyecto académico desarrollado con fines educativos. No se ha especificado una
 ---
 
 **PlantHealth — Gestión y análisis de la salud vegetal.**
+# PlantHealth
+### API REST de sanidad vegetal para Breaze in the Moon
+
+## 1. Descripción del proyecto
+
+**PlantHealth** es una API REST desarrollada con **NestJS**, **TypeORM** y **MySQL** para la compañía agrícola *Breaze in the Moon*. Centraliza la información que hoy está dispersa en cuadernos y hojas de cálculo: plantas, patógenos, enfermedades, susceptibilidades, tratamientos, cultivos y brotes reportados en campo. Además ofrece consultas compuestas, verificación de mutaciones genéticas y estadísticas de brotes.
+
+Decisiones principales del proyecto:
+
+- **Un módulo por recurso**, cada uno con su controlador, servicio, entidad y DTOs.
+- **Validaciones manuales** en los servicios (y `ParseIntPipe` en los controladores para los IDs de ruta). Cada validación que falla responde con el código HTTP adecuado y un mensaje claro (`400`, `404`, `409`).
+- **Relaciones solo por ID:** no se usan decoradores de relaciones de TypeORM (`@ManyToOne`, `@OneToMany`, etc.), ni la opción `relations`, ni `join...AndSelect`. Las relaciones se guardan como columnas con el ID y se resuelven manualmente en los servicios.
+- **Documentación con Swagger** de todos los endpoints, parámetros, cuerpos y respuestas.
+
+## 2. Integrantes
+
+| Integrante | Responsabilidades |
+|---|---|
+| Isabella Cruz Quintero | Plantas, susceptibilidades y cultivos; consultas compuestas y verificación de mutaciones; colección de Bruno; integración de ramas en Gitflow. |
+| Juliana Velasquez Rivera | Brotes y estadísticas. |
+| Isaac Garcia Arbelaez | Patógenos, enfermedades y tratamientos. |
+
+## 3. Tecnologías
+
+- Node.js y TypeScript
+- NestJS
+- TypeORM
+- MySQL
+- Swagger (`@nestjs/swagger`)
+- Bruno (colección de peticiones)
+- Git y GitHub (Gitflow)
+
+## 4. Requisitos previos
+
+- Node.js 22 o superior y npm
+- MySQL Server 8 o superior
+- Git
+- Bruno (para ejecutar la colección de peticiones)
+
+## 5. Instalación y configuración
+
+### 5.1. Clonar el repositorio
+
+```bash
+git clone https://github.com/isabellacruzq-lgtm/PlantHealth
+cd PlantHealth
+git checkout develop
+```
+
+### 5.2. Instalar dependencias
+
+```bash
+npm install
+```
+
+### 5.3. Configurar las variables de entorno
+
+Copia el archivo de ejemplo y completa tus credenciales de MySQL:
+
+```bash
+cp .env.example .env
+```
+
+Contenido de `.env.example`:
+
+```env
+PORT=3000
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=
+DB_PASSWORD=
+DB_DATABASE=proyecto_back
+DB_SYNCHRONIZE=false
+```
+
+El archivo `.env` está en el `.gitignore` y no debe subirse al repositorio.
+
+### 5.4. Crear la base de datos y cargar los datos de ejemplo
+
+El script `database/proyecto_back.sql` crea la base de datos `proyecto_back`, todas las tablas y los datos de ejemplo para la sustentación. Ejecútalo con:
+
+```bash
+mysql -u TU_USUARIO -p < database/proyecto_back.sql
+```
+
+El script usa `INSERT IGNORE` con IDs explícitos, por lo que puede ejecutarse más de una vez sin duplicar los datos. Para empezar de cero, elimina la base de datos y vuelve a ejecutarlo.
+
+## 6. Ejecución
+
+```bash
+# Desarrollo (con recarga automática)
+npm run start:dev
+
+# Normal
+npm run start
+
+# Compilar
+npm run build
+```
+
+La API queda disponible en `http://localhost:3000` (o en el puerto definido en `PORT`).
+
+## 7. Documentación de la API (Swagger)
+
+Con la aplicación en ejecución, abre en el navegador:
+
+```text
+http://localhost:3000/api-docs
+```
+
+## 8. Endpoints
+
+### Recursos (CRUD)
+
+Cada recurso ofrece `POST /recurso`, `GET /recurso`, `GET /recurso/:id`, `PATCH /recurso/:id` y `DELETE /recurso/:id`.
+
+| Recurso | Ruta base | Filtros del `GET` (query params) |
+|---|---|---|
+| Plantas | `/plantas` | `nombreComun`, `familiaBotanica`, `tipoCultivo` |
+| Patógenos | `/patogenos` | `nombre`, `nombreCientifico`, `tipo`, `transmision` |
+| Enfermedades | `/enfermedades` | `nombre`, `epocaRiesgo`, `patogenoId` |
+| Susceptibilidades | `/susceptibilidades` | `plantaId`, `enfermedadId`, `nivel` |
+| Tratamientos | `/tratamientos` | `tipo`, `enfermedadId`, `nombre` |
+| Cultivos | `/cultivos` | `plantaId`, `lote`, `region`, `desde`, `hasta` |
+| Brotes | `/brotes` | `plantaId`, `enfermedadId`, `region`, `desde`, `hasta` |
+
+### Consultas compuestas y verificación de mutaciones
+
+| Endpoint | Qué devuelve |
+|---|---|
+| `GET /plantas/:id/enfermedades` | Planta con sus enfermedades (según susceptibilidad), tratamientos, cultivos y brotes. |
+| `GET /patogenos/:id/enfermedades` | Patógeno con las enfermedades que causa. |
+| `GET /enfermedades/:id/detalle` | Enfermedad con su patógeno, tratamientos, plantas susceptibles y brotes. |
+| `GET /brotes/detalle` | Brotes con su planta y su enfermedad. |
+| `GET /consultas/brotes/detalle` | Brotes con planta, enfermedad y patógeno. |
+| `GET /cultivos/:id/detalle` | Cultivo con su planta y la verificación genética. |
+| `GET /cultivos/:id/mutaciones` | Número de mutaciones de la semilla del cultivo frente a la secuencia de referencia de su planta. Si las longitudes no coinciden responde `400` con un mensaje claro. |
+
+### Estadísticas
+
+| Endpoint | Qué devuelve |
+|---|---|
+| `GET /estadisticas/brotes-por-enfermedad` | Cantidad de brotes por enfermedad. |
+| `GET /estadisticas/brotes-por-region` | Cantidad de brotes por región. |
+| `GET /estadisticas/brotes-por-planta` | Cantidad de brotes por planta. |
+| `GET /estadisticas/hectareas-por-enfermedad` | Hectáreas afectadas por enfermedad. |
+| `GET /estadisticas/hectareas-por-region` | Hectáreas afectadas por región. |
+| `GET /estadisticas/brotes-por-periodo?desde=&hasta=` | Brotes y hectáreas por mes. |
+| `GET /estadisticas/patogenos-mas-problematicos` | Patógenos ordenados por brotes y hectáreas afectadas. |
+
+## 9. Validaciones principales
+
+| Situación | Código HTTP |
+|---|---|
+| Datos obligatorios ausentes o vacíos, tipos incorrectos, valores fuera de los permitidos, secuencia genética con letras distintas de A, C, G, T en mayúsculas, fechas futuras, hectáreas menores o iguales a cero, secuencias de distinta longitud al verificar mutaciones | `400 Bad Request` |
+| Registro referenciado por ID que no existe (planta, enfermedad, patógeno, cultivo) | `404 Not Found` |
+| Nombre científico repetido, susceptibilidad repetida para la misma planta y enfermedad, o eliminación de un registro con dependencias | `409 Conflict` |
+
+Restricciones al eliminar:
+
+- **Patógeno:** no se elimina si tiene enfermedades asociadas.
+- **Enfermedad:** no se elimina si tiene tratamientos, susceptibilidades o brotes.
+- **Planta:** no se elimina si tiene susceptibilidades, cultivos o brotes.
+
+## 10. Pruebas y colección de Bruno
+
+```bash
+npm run build   # verifica que el código compila
+npm test        # pruebas unitarias
+```
+
+La colección de Bruno está en la carpeta `bruno/`, organizada por recurso (Plantas, Patógenos, Enfermedades, Tratamientos, Susceptibilidades, Cultivos, Brotes, Consultas, Estadísticas y General). Incluye casos exitosos y casos que violan cada restricción del cliente.
+
+Para usarla: abre Bruno, elige **Open Collection**, selecciona la carpeta `bruno/` y ejecuta las peticiones con la API corriendo y la base de datos cargada (la variable `baseUrl` apunta a `http://localhost:3000`).
+
+## 11. Datos de ejemplo
+
+El script SQL carga 8 plantas, 8 patógenos, 9 enfermedades, 12 tratamientos, 16 susceptibilidades, 8 cultivos y 22 brotes en distintas regiones y meses. Dos detalles útiles para la sustentación:
+
+- Los cultivos 3, 4 y 6 tienen mutaciones (1, 1 y 2); los cultivos 1, 2, 5 y 8 no tienen ninguna.
+- El cultivo 7 tiene una semilla de longitud distinta a la referencia, para mostrar el error de la verificación de mutaciones.
+
+## 12. Control de versiones (Gitflow)
+
+- `main`: versiones estables.
+- `develop`: integración de las funcionalidades.
+- `feature/*`: una rama por funcionalidad (`feature/plantas`, `feature/patogenos`, `feature/enfermedades`, `feature/tratamientos`, `feature/brotes`, `feature/consultas`, `feature/bruno`).
+- `release/*` y `hotfix/*`: cuando se necesiten.
+
+Siguiendo la indicación del curso, **las ramas no se eliminan** después de integrarlas.
+
+Flujo de trabajo:
+
+```bash
+git checkout develop
+git pull origin develop
+git checkout -b feature/nombre-funcionalidad
+
+# desarrollar, compilar y hacer commits con tu propio usuario
+npm run build
+git add -A
+git commit -m "feat: descripción clara de lo que se hizo"
+git push -u origin feature/nombre-funcionalidad
+```
+
+Después se abre un Pull Request hacia `develop`.
+
+## 13. Licencia
+
+Proyecto académico desarrollado con fines educativos.
