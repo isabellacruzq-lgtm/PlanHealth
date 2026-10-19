@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 6
 }
+
 post {
-  url: {{baseUrl}}/cultivos
+  url: http://localhost:3000/cultivos
   body: json
   auth: none
 }
+
 body:json {
   {
     "plantaId": "1",

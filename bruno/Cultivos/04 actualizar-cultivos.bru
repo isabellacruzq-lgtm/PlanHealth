@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 4
 }
+
 patch {
-  url: {{baseUrl}}/cultivos/1
+  url: http://localhost:3000/cultivos/1
   body: json
   auth: none
 }
+
 body:json {
   {
     "region": "Risaralda"

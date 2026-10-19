@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 1
 }
+
 get {
-  url: {{baseUrl}}/brotes
+  url: http://localhost:3000/brotes
   body: none
   auth: none
 }
+
 assert {
   res.status: 200
 }

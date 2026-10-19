@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 4
 }
+
 patch {
-  url: {{baseUrl}}/plantas/1
+  url: http://localhost:3000/plantas/1
   body: json
   auth: none
 }
+
 body:json {
   {
     "nombreComun": "Pepino actualizado"

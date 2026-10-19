@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 2
 }
+
 post {
-  url: {{baseUrl}}/brotes
+  url: http://localhost:3000/brotes
   body: json
   auth: none
 }
+
 body:json {
   {
     "plantaId": 1,

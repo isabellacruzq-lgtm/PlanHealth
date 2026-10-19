@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 4
 }
+
 patch {
-  url: {{baseUrl}}/brotes/1
+  url: http://localhost:3000/brotes/1
   body: json
   auth: none
 }
+
 body:json {
   {
     "hectareasAfectadas": 1.25

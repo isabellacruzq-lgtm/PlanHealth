@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 6
 }
+
 post {
-  url: {{baseUrl}}/tratamientos
+  url: http://localhost:3000/tratamientos
   body: json
   auth: none
 }
+
 body:json {
   {
     "nombre": "Tratamiento inválido",

@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 1
 }
+
 post {
-  url: {{baseUrl}}/enfermedades
+  url: http://localhost:3000/enfermedades
   body: json
   auth: none
 }
+
 body:json {
   {
     "nombre": "Enfermedad de ejemplo",

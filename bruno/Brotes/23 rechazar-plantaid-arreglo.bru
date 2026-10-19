@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 3
 }
+
 post {
-  url: {{baseUrl}}/brotes
+  url: http://localhost:3000/brotes
   body: json
   auth: none
 }
+
 body:json {
   {
     "plantaId": [
@@ -19,6 +21,7 @@ body:json {
     "hectareasAfectadas": 1.5
   }
 }
+
 assert {
   res.status: 400
 }

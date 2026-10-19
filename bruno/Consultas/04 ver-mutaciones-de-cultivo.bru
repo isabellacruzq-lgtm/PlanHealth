@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 4
 }
+
 get {
-  url: {{baseUrl}}/cultivos/1/mutaciones
+  url: http://localhost:3000/cultivos/1/mutaciones
   body: none
   auth: none
 }
+
 assert {
   res.status: 200
 }

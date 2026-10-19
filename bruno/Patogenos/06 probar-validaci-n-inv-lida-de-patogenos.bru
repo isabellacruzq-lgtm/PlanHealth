@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 6
 }
+
 post {
-  url: {{baseUrl}}/patogenos
+  url: http://localhost:3000/patogenos
   body: json
   auth: none
 }
+
 body:json {
   {
     "nombre": "Patógeno inválido",
