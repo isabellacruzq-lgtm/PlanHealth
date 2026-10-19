@@ -1,0 +1,21 @@
+meta {
+  name: Probar validación inválida de cultivos
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:3000/cultivos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": "1",
+    "lote": "LOTE-ERR",
+    "region": "Caldas",
+    "fechaSiembra": "2026-01-10",
+    "codigoGeneticoSemilla": "ACGT"
+  }
+}

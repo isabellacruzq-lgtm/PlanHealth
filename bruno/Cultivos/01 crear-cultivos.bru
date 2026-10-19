@@ -1,0 +1,21 @@
+meta {
+  name: Crear cultivos
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/cultivos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 2,
+    "lote": "LOTE-DEMO-04",
+    "region": "Caldas",
+    "fechaSiembra": "2026-01-10",
+    "codigoGeneticoSemilla": "ACGTACGTACGT"
+  }
+}

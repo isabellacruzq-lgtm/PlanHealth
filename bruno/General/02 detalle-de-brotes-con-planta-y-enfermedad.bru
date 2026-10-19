@@ -1,0 +1,15 @@
+meta {
+  name: Detalle de brotes con planta y enfermedad
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/brotes/detalle
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: 200
+}

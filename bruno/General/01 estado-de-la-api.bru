@@ -1,0 +1,15 @@
+meta {
+  name: Estado de la API
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: 200
+}

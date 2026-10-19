@@ -1,0 +1,20 @@
+meta {
+  name: Probar validación inválida de enfermedades
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:3000/enfermedades
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Enfermedad inválida",
+    "descripcionSintomas": "Síntomas",
+    "epocaRiesgo": "todo_el_año",
+    "patogenoId": 1
+  }
+}

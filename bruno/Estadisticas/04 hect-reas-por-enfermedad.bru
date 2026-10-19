@@ -1,0 +1,15 @@
+meta {
+  name: Hectáreas por enfermedad
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:3000/estadisticas/hectareas-por-enfermedad
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: 200
+}

@@ -1,0 +1,16 @@
+meta {
+  name: Brotes por periodo
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/estadisticas/brotes-por-periodo?desde=2026-01-01&hasta=2026-12-31
+  body: none
+  auth: none
+}
+
+params:query {
+  desde: 2026-01-01
+  hasta: 2026-12-31
+}

@@ -1,0 +1,25 @@
+meta {
+  name: Rechazar hectareas cadena
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:3000/brotes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantaId": 1,
+    "enfermedadId": 1,
+    "fecha": "2026-06-10",
+    "region": "Caldas",
+    "hectareasAfectadas": "2.5"
+  }
+}
+
+assert {
+  res.status: 400
+}

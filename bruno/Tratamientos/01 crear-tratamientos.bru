@@ -1,0 +1,20 @@
+meta {
+  name: Crear tratamientos
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/tratamientos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Tratamiento de prueba",
+    "descripcionAplicacion": "Aplicar de acuerdo con la ficha técnica.",
+    "tipo": "biológico",
+    "enfermedadId": 3
+  }
+}

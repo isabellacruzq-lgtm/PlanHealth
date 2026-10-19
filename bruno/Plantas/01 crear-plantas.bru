@@ -1,0 +1,21 @@
+meta {
+  name: Crear plantas
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/plantas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombreComun": "Lechuga",
+    "nombreCientifico": "Lactuca sativa",
+    "familiaBotanica": "Asteraceae",
+    "tipoCultivo": "hortaliza",
+    "secuenciaGenetica": "ACGTACGTAAGG"
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Consultar enfermedades de patógeno
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:3000/patogenos/1/enfermedades
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: 200
+}

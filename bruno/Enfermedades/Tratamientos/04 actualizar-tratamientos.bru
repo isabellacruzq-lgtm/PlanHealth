@@ -1,0 +1,17 @@
+meta {
+  name: Actualizar tratamientos
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:3000/tratamientos/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "tipo": "cultural"
+  }
+}

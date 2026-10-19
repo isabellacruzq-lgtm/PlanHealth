@@ -1,0 +1,39 @@
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Enfermedad, EpocaRiesgo } from './enfermedad.entity.js';
+import { CreateEnfermedadDto } from './dto/create-enfermedad.dto.js';
+import { UpdateEnfermedadDto } from './dto/update-enfermedad.dto.js';
+@Injectable()
+export class EnfermedadesService {
+  constructor(@InjectRepository(Enfermedad) private readonly repo: Repository<Enfermedad>) {}
+  private texto(v: unknown, campo: string, max = 120): string { if (typeof v !== 'string' || !v.trim()) throw new BadRequestException(`${campo} es obligatorio`); const s=v.trim(); if(s.length>max) throw new BadRequestException(`${campo} no puede superar ${max} caracteres`); return s; }
+  private id(v: unknown): number { const n=Number(v); if(!Number.isInteger(n)||n<=0) throw new BadRequestException('patogenoId debe ser un entero positivo'); return n; }
+  private epoca(v: unknown): EpocaRiesgo { if(!Object.values(EpocaRiesgo).includes(v as EpocaRiesgo)) throw new BadRequestException(`epocaRiesgo debe ser uno de: ${Object.values(EpocaRiesgo).join(', ')}`); return v as EpocaRiesgo; }
+  private async validarPatogeno(id: number) { const rows=await this.repo.manager.query('SELECT id FROM patogenos WHERE id = ?', [id]); if(!rows.length) throw new NotFoundException(`No existe un patógeno con ID ${id}`); }
+  async crear(dto: CreateEnfermedadDto) { const patogenoId=this.id(dto.patogenoId); await this.validarPatogeno(patogenoId); return this.repo.save(this.repo.create({ nombre:this.texto(dto.nombre,'nombre'), descripcionSintomas:this.texto(dto.descripcionSintomas,'descripcionSintomas',5000), epocaRiesgo:this.epoca(dto.epocaRiesgo), patogenoId })); }
+  async listar(f: { nombre?:string; epocaRiesgo?:string; patogenoId?:string }) { const qb=this.repo.createQueryBuilder('e'); if(f.nombre) qb.andWhere('e.nombre LIKE :nombre',{nombre:`%${f.nombre}%`}); if(f.epocaRiesgo) qb.andWhere('e.epocaRiesgo = :epoca',{epoca:this.epoca(f.epocaRiesgo)}); if(f.patogenoId!==undefined) qb.andWhere('e.patogenoId = :pid',{pid:this.id(f.patogenoId)}); return qb.orderBy('e.id','ASC').getMany(); }
+  async buscarPorId(id:number) { const r=await this.repo.findOneBy({id}); if(!r) throw new NotFoundException(`No existe una enfermedad con ID ${id}`); return r; }
+  async detalle(id: number) {
+    const enfermedad = await this.buscarPorId(id);
+    const [patogenos, tratamientos, susceptibilidades, brotes] = await Promise.all([
+      this.repo.manager.query('SELECT id, nombre, nombreCientifico, tipo, transmision FROM patogenos WHERE id = ?', [enfermedad.patogenoId]),
+      this.repo.manager.query('SELECT id, nombre, descripcionAplicacion, tipo, enfermedadId FROM tratamientos WHERE enfermedadId = ? ORDER BY id', [id]),
+      this.repo.manager.query('SELECT id, plantaId, enfermedadId, nivel FROM susceptibilidades WHERE enfermedadId = ? ORDER BY id', [id]),
+      this.repo.manager.query('SELECT id, plantaId, enfermedadId, fecha, region, hectareasAfectadas FROM brotes WHERE enfermedadId = ? ORDER BY fecha DESC, id DESC', [id]),
+    ]);
+    const plantas = await Promise.all(susceptibilidades.map(async (s: { plantaId: number }) => {
+      const rows = await this.repo.manager.query('SELECT id, nombreComun, nombreCientifico FROM plantas WHERE id = ?', [s.plantaId]);
+      return rows[0] ?? null;
+    }));
+    return {
+      ...enfermedad,
+      patogeno: patogenos[0] ?? null,
+      tratamientos,
+      plantasSusceptibles: susceptibilidades.map((s: { id: number; plantaId: number; nivel: string }, index: number) => ({ ...s, planta: plantas[index] })),
+      brotes,
+    };
+  }
+  async actualizar(id:number,dto:UpdateEnfermedadDto) { const r=await this.buscarPorId(id); if(dto.nombre!==undefined) r.nombre=this.texto(dto.nombre,'nombre'); if(dto.descripcionSintomas!==undefined) r.descripcionSintomas=this.texto(dto.descripcionSintomas,'descripcionSintomas',5000); if(dto.epocaRiesgo!==undefined) r.epocaRiesgo=this.epoca(dto.epocaRiesgo); if(dto.patogenoId!==undefined) { r.patogenoId=this.id(dto.patogenoId); await this.validarPatogeno(r.patogenoId); } return this.repo.save(r); }
+  async eliminar(id:number) { await this.buscarPorId(id); const [t,s,b]=await Promise.all([this.repo.manager.query('SELECT id FROM tratamientos WHERE enfermedadId = ?', [id]),this.repo.manager.query('SELECT id FROM susceptibilidades WHERE enfermedadId = ?', [id]),this.repo.manager.query('SELECT id FROM brotes WHERE enfermedadId = ?', [id])]); const causas=[]; if(t.length) causas.push('tratamientos'); if(s.length) causas.push('susceptibilidades'); if(b.length) causas.push('brotes'); if(causas.length) throw new ConflictException(`No se puede eliminar la enfermedad porque tiene registros asociados: ${causas.join(', ')}`); await this.repo.delete(id); return {mensaje:`Enfermedad ${id} eliminada correctamente`}; }
+}

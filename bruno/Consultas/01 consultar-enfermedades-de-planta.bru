@@ -1,0 +1,15 @@
+meta {
+  name: Consultar enfermedades de planta
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/plantas/1/enfermedades
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: 200
+}
