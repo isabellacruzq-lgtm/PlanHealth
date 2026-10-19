@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 7
 }
+
 get {
-  url: {{baseUrl}}/estadisticas/patogenos-mas-problematicos
+  url: http://localhost:3000/estadisticas/patogenos-mas-problematicos
   body: none
   auth: none
 }
+
 assert {
   res.status: 200
 }

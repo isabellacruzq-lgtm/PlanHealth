@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 3
 }
+
 get {
-  url: {{baseUrl}}/enfermedades/1/detalle
+  url: http://localhost:3000/enfermedades/1/detalle
   body: none
   auth: none
 }
+
 assert {
   res.status: 200
 }

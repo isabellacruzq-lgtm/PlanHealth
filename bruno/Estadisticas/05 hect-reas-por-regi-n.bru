@@ -3,11 +3,13 @@ meta {
   type: http
   seq: 5
 }
+
 get {
-  url: {{baseUrl}}/estadisticas/hectareas-por-region
+  url: http://localhost:3000/estadisticas/hectareas-por-region
   body: none
   auth: none
 }
+
 assert {
   res.status: 200
 }

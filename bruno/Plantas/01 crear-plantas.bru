@@ -3,17 +3,19 @@ meta {
   type: http
   seq: 1
 }
+
 post {
-  url: {{baseUrl}}/plantas
+  url: http://localhost:3000/plantas
   body: json
   auth: none
 }
+
 body:json {
   {
-    "nombreComun": "Pepino",
-    "nombreCientifico": "Cucumis sativus",
-    "familiaBotanica": "Cucurbitaceae",
+    "nombreComun": "Lechuga",
+    "nombreCientifico": "Lactuca sativa",
+    "familiaBotanica": "Asteraceae",
     "tipoCultivo": "hortaliza",
-    "secuenciaGenetica": "ACGTACGTACGT"
+    "secuenciaGenetica": "ACGTACGTAAGG"
   }
 }
