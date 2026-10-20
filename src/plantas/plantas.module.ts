@@ -5,7 +5,7 @@ import { PlantasController } from './plantas.controller.js';
 import { PlantasService } from './plantas.service.js';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Planta])],
+  imports: [TypeOrmModule.forFeature([])],
   controllers: [PlantasController],
   providers: [PlantasService],
   exports: [PlantasService],
