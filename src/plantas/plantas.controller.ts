@@ -7,7 +7,7 @@ import { UpdatePlantaDto } from './dto/update-planta.dto.js';
 @ApiTags('Plantas')
 @Controller('plantas')
 export class PlantasController {
-  constructor(private readonly plantasService: PlantasService) {}
+  
 
   @Post()
   @ApiOperation({ summary: 'Registrar una planta' })
